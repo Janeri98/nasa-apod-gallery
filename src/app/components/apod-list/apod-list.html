@@ -1,0 +1,88 @@
+<div class="container mt-4">
+  <h1 class="text-center mb-4">NASA Astronomy Picture of the Day Gallery</h1>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Filtros de Búsqueda</h5>
+      
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <label class="form-label">Tipo de Filtro</label>
+          <select class="form-select" [(ngModel)]="filterType">
+            <option value="single">Fecha Específica</option>
+            <option value="range">Rango de Fechas</option>
+            <option value="count">Cantidad de Imágenes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-md-4" *ngIf="filterType === 'single'">
+          <label class="form-label">Fecha</label>
+          <input type="date" class="form-control" [(ngModel)]="singleDate" [max]="endDate">
+        </div>
+
+        <div class="col-md-4" *ngIf="filterType === 'range'">
+          <label class="form-label">Fecha Inicio</label>
+          <input type="date" class="form-control" [(ngModel)]="startDate">
+        </div>
+
+        <div class="col-md-4" *ngIf="filterType === 'range'">
+          <label class="form-label">Fecha Fin</label>
+          <input type="date" class="form-control" [(ngModel)]="endDate" [max]="endDate">
+        </div>
+
+        <div class="col-md-4" *ngIf="filterType === 'count'">
+          <label class="form-label">Cantidad</label>
+          <input type="number" class="form-control" [(ngModel)]="count" min="1" max="100">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" (click)="searchAPODs()" [disabled]="loading">
+        {{ loading ? 'Buscando...' : 'Buscar' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading y Error -->
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <!-- Galería -->
+  <div *ngIf="!loading && filteredApods.length > 0" class="row">
+    <div class="col-12 mb-3">
+      <p class="text-muted">Mostrando {{ filteredApods.length }} imágenes</p>
+    </div>
+    
+    <div class="col-md-6 col-lg-4 mb-4" *ngFor="let apod of filteredApods">
+      <div class="card h-100 apod-card">
+        <img 
+          [src]="getImageUrl(apod)" 
+          class="card-img-top" 
+          [alt]="apod.title"
+          (error)="apod.url = 'assets/placeholder.jpg'"
+        >
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ apod.title }}</h5>
+          <p class="card-text flex-grow-1">{{ apod.explanation | slice:0:100 }}...</p>
+          <small class="text-muted">{{ apod.date }} • {{ apod.media_type }}</small>
+          <button class="btn btn-outline-primary mt-2" (click)="viewDetail(apod)">
+            Ver Detalles
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && filteredApods.length === 0 && !error" class="text-center">
+    <p>No se encontraron imágenes. Intenta con otros filtros.</p>
+  </div>
+</div>

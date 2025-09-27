@@ -1,12 +1,23 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.html',
-  styleUrl: './app.css'
+  template: `
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" routerLink="/">
+          🌌 NASA APOD Gallery
+        </a>
+      </div>
+    </nav>
+    
+    <router-outlet></router-outlet>
+  `,
+  styleUrls: ['./app.css']
 })
 export class App {
-  protected readonly title = signal('nasa-apod-gallery');
+  title = 'nasa-apod-gallery';
 }

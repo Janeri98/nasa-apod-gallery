@@ -1,0 +1,55 @@
+<div class="container mt-4" *ngIf="!loading && apod; else loadingTemplate">
+  <button class="btn btn-outline-secondary mb-3" (click)="goBack()">
+    ← Volver a la Galería
+  </button>
+
+  <div class="card">
+    <div class="card-body">
+      <h1 class="card-title text-center mb-4">{{ apod.title }}</h1>
+      
+      <div class="row">
+        <div class="col-md-6">
+          <div class="media-container">
+            <img 
+              *ngIf="!isVideo()" 
+              [src]="apod.hdurl || apod.url" 
+              [alt]="apod.title"
+              class="img-fluid rounded"
+            >
+            <div *ngIf="isVideo()" class="video-container">
+              <iframe 
+                [src]="getSafeUrl(apod.url)" 
+                frameborder="0" 
+                allowfullscreen
+                class="w-100"
+                height="400"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="apod-info">
+            <p><strong>Fecha:</strong> {{ apod.date }}</p>
+            <p><strong>Tipo de Media:</strong> {{ apod.media_type }}</p>
+            <p *ngIf="apod.copyright"><strong>Copyright:</strong> {{ apod.copyright }}</p>
+            
+            <h5>Explicación:</h5>
+            <p class="explanation">{{ apod.explanation }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <div class="container mt-4 text-center">
+    <div class="spinner-border" role="status" *ngIf="loading">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <div *ngIf="error" class="alert alert-danger mt-3">
+      {{ error }}
+    </div>
+  </div>
+</ng-template>
